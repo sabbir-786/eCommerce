@@ -43,11 +43,113 @@ npm install @reduxjs/toolkit axios class-variance-authority clsx lucide-react re
 * **tailwindcss-animate**: Adds pre-built, configurable animations to Tailwind CSS projects.
 
 
+## How to Add Shadcn UI in React
 
+#### 1. Install Tailwind CSS
+Install tailwindcss and @tailwindcss/vite via npm.
+
+```bash
+npm install tailwindcss @tailwindcss/vite
+```
+#### 2. Configure the Vite plugin
+Add the @tailwindcss/vite plugin to your Vite configuration.
+
+```js
+import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite' //add this line
+export default defineConfig({
+  plugins: [
+    tailwindcss(), //add this line 
+  ],
+})
+```
+
+#### 3. Import Tailwind CSS
+Add an @import to your CSS file that imports Tailwind CSS. 
+we add in **index.css**
+
+```js
+//src/index.css 
+@import "tailwindcss";
+```
+#### 4. Create these File in Root Folder 
+###### 1. **jsconfig.json** 
+
+
+```json
+{
+    //jsconfig.json
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        }
+    },
+    "include": [
+        "src",
+        "../admin/pages/admin",
+        "../admin/store/admin-slice"
+    ]
+}
+```
+
+
+2. **jsconfigapp.json**
+
+```json
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        }
+    },
+    "include": [
+        "server"
+    ]
+}
+```
+
+
+
+
+#### 4. Update vite.config.ts
+Add the following code to the vite.config.ts so your app can resolve paths without error:
+
+```bash
+npm install -D @types/node
+```
+
+**vite.config.js**
+
+```js
+import path from "path"
+import tailwindcss from "@tailwindcss/vite"
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+})
+```
+### 5. Run the CLI
+Run the shadcn init command to setup your project:
 
 ```bash
 npx shadcn@latest init
 ```
+
+You can then import it like this:
 
 
 ```bash
