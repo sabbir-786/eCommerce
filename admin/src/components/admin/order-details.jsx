@@ -5,7 +5,7 @@ import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getAllOrdersForAdmin, getOrderDetailsForAdmin, updateOrderStatus } from "@/store/orderSlice";
+import { getAllOrdersForAdmin, getOrderDetailsForAdmin, updateOrderStatus } from "@/store/adminOrderSlice.js";
 import CommonForm from "../form";
 import { useSonner } from "sonner";
 

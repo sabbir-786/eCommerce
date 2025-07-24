@@ -2,20 +2,23 @@ import { Navigate, useLocation } from "react-router-dom";
 
 function AdminCheckAuth({ isAuthenticated, children }) {
     const location = useLocation();
-    const isLoginPage = location.pathname.includes("/admin/login");
-    const isRegisterPage = location.pathname.includes("/admin/register");
 
-    // 🔐 Not logged in → Redirect to admin login (except for /login or /register)
-    if (!isAuthenticated && !isLoginPage && !isRegisterPage) {
-        return <Navigate to="/admin/login" replace />;
+    if (
+        !isAuthenticated &&
+        !location.pathname.includes("/login") &&
+        !location.pathname.includes("/register")
+    ) {
+        return <Navigate to="/auth/login" />;
     }
 
-    // 🟢 Already logged in → Prevent access to /login or /register
-    if (isAuthenticated && (isLoginPage || isRegisterPage)) {
-        return <Navigate to="/admin/dashboard" replace />;
+    if (
+        isAuthenticated &&
+        (location.pathname.includes("/login") ||
+            location.pathname.includes("/register"))
+    ) {
+        return <Navigate to="/admin/home" />;
     }
 
-    // ✅ Authorized access
     return <>{children}</>;
 }
 

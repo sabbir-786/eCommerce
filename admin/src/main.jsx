@@ -4,11 +4,11 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import adminStore from './store/store'
+import store from './store/adminStore'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <Provider store={adminStore}>
+    <Provider store={store}>
       <App />
     </Provider>
   </BrowserRouter>

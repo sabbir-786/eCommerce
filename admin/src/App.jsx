@@ -1,25 +1,24 @@
-import { useEffect } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
-import { Routes, Route, Navigate } from "react-router-dom";
-
+import { useEffect } from "react";
+import AdminCheckAuth from "./components/AdminCheckAuth";
+import AdminLogin from "./pages/auth/login";
+// import AdminAuthLayout from "./components/auth/layout";
+import AdminLayout from "./components/Admin/layout";
+import AdminHome from "./pages/Admin/home";
 import { adminCheckAuth } from "./store/adminAuthSlice";
-
-import AdminLayout from "./components/admin/layout";
-import AdminCheckAuth from "./components/adminCheckAuth";
+import AdminUsers from "./pages/admin/AdminUser";
+import EditUserDialog from "./pages/admin/EditUserDialog";
+import AdminProducts from "./pages/admin/AddProduct";
+import AdminOrders from "./pages/admin/orders";
+import AdminFeatures from "./pages/admin/features";
+import AdminCategoryManager from "./pages/admin/AdminCategoryManager";
 import AdminAuthLayout from "./components/auth/layout";
 
-import AdminLogin from "./pages/auth/login";
-import AdminDashboard from "./pages/dashboard";
-import AdminProducts from "./pages/products";
-import AdminOrders from "./pages/orders";
-import AdminFeatures from "./pages/features";
-
-import { Toaster } from "sonner";
-import { Skeleton } from "./components/ui/skeleton";
-
 function App() {
+  const { user, isAuthenticated, isLoading } = useSelector((state) => state.adminAuth);
   const dispatch = useDispatch();
-  const { isAuthenticated, isLoading, user } = useSelector((state) => state.adminAuth);
 
   useEffect(() => {
     dispatch(adminCheckAuth());
@@ -27,47 +26,60 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <Skeleton className="w-[800px] h-[600px]" />
+      <div className="flex justify-center items-center h-screen">
+        <h1>Loading</h1>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="flex flex-col overflow-hidden bg-black min-h-screen select-none outline-none">
       <Routes>
-        {/* Default Route */}
+        {/* 👇 Root path logic */}
         <Route
           path="/"
           element={
-            isAuthenticated && user?.role === "admin"
-              ? <Navigate to="/admin/dashboard" />
-              : <Navigate to="/auth/login" />
+            isAuthenticated ? (
+              <Navigate to="/admin/home" />
+            ) : (
+              <Navigate to="/auth/login" />
+            )
           }
         />
 
-        {/* Auth Routes */}
-        <Route path="/auth" element={<AdminAuthLayout />}>
+        {/* Auth routes */}
+        <Route
+          path="/auth"
+          element={
+            <AdminCheckAuth isAuthenticated={isAuthenticated}>
+              <AdminAuthLayout />
+            </AdminCheckAuth>
+          }
+        >
           <Route path="login" element={<AdminLogin />} />
         </Route>
 
-        {/* Protected Admin Routes */}
+
         <Route
           path="/admin"
           element={
-            <AdminCheckAuth isAuthenticated={isAuthenticated} user={user}>
+            <AdminCheckAuth isAuthenticated={isAuthenticated}>
               <AdminLayout />
             </AdminCheckAuth>
           }
         >
-          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="home" element={<AdminHome />} />
+          <Route path="user" element={<AdminUsers />} />
+          <Route path="categories" element={<AdminCategoryManager />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
+
         </Route>
 
+
         {/* 404 */}
-        <Route path="*" element={<div className="text-red-600 p-4">404 Not Found</div>} />
+        <Route path="*" element={<div className="text-white p-4">404 Not Found</div>} />
       </Routes>
 
       <Toaster richColors position="top-right" />

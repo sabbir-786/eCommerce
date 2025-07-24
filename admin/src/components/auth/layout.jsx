@@ -5,14 +5,13 @@ const AdminAuthLayout = () => {
         <div
             className="flex min-h-screen w-full items-center justify-center bg-cover bg-center bg-no-repeat px-4"
             style={{
-                backgroundImage: "url('/Login-Bg')", // ✅ Path to your image in /public
+                backgroundImage: "url('/Login-Bg.jpg')",
             }}
         >
-            {/* Optional overlay for better contrast */}
-            <div className="w-full max-w-md bg-white/20 backdrop-blur-md rounded-xl p-6">
+            < div className="w-full max-w-md bg-white/20 backdrop-blur-md rounded-xl p-6" >
                 <Outlet />
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

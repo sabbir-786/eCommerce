@@ -1,11 +1,14 @@
 import mongoose from "mongoose";
 
-const FeatureSchema = new mongoose.Schema(
-    {
-        image: String,
+const featureImageSchema = new mongoose.Schema({
+    image: {
+        type: String,
+        required: true,
     },
-    { timestamps: true }
-);
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+});
 
-const Feature = mongoose.model("Feature", FeatureSchema);
-export default Feature;
+export default mongoose.model("FeatureImage", featureImageSchema);

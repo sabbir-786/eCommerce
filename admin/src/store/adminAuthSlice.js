@@ -1,74 +1,58 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Initial State
 const initialState = {
     isAuthenticated: false,
     isLoading: true,
     user: null,
 };
 
-// ✅ Admin Login
-export const adminLogin = createAsyncThunk("admin/login", async (formData, { rejectWithValue }) => {
-    try {
-        const res = await axios.post(
-            "http://localhost:5000/api/admin/login",
-            formData,
-            { withCredentials: true }
-        );
-        return res.data;
-    } catch (err) {
-        return rejectWithValue(err.response?.data || { success: false, message: "Login failed" });
-    }
+export const adminLogin = createAsyncThunk("admin/login", async (formData) => {
+    const response = await axios.post(
+        "http://localhost:5000/api/admin/auth/login",
+        formData,
+        { withCredentials: true }
+    );
+    return response.data;
 });
 
-// ✅ Admin Logout
-export const adminLogout = createAsyncThunk("admin/logout", async (_, { rejectWithValue }) => {
-    try {
-        const res = await axios.post(
-            "http://localhost:5000/api/admin/logout",
-            {},
-            { withCredentials: true }
-        );
-        return res.data;
-    } catch (err) {
-        return rejectWithValue(err.response?.data || { success: false });
-    }
+
+
+export const adminLogout = createAsyncThunk("admin/logout", async () => {
+    const response = await axios.post(
+        "http://localhost:5000/api/admin/auth/logout",
+        {},
+        { withCredentials: true }
+    );
+    return response.data;
 });
 
-// ✅ Admin Auth Check
-export const adminCheckAuth = createAsyncThunk("admin/checkauth", async (_, { rejectWithValue }) => {
-    try {
-        const res = await axios.get(
-            "http://localhost:5000/api/admin/check-auth",
-            {
-                withCredentials: true,
-                headers: {
-                    "Cache-Control": "no-store, no-cache, must-revalidate",
-                },
-            }
-        );
-        return res.data;
-    } catch (err) {
-        return rejectWithValue(err.response?.data || { success: false });
-    }
+export const adminCheckAuth = createAsyncThunk("admin/checkauth", async () => {
+    const response = await axios.get(
+        "http://localhost:5000/api/admin/auth/check-auth",
+        {
+            withCredentials: true,
+            headers: {
+                "Cache-Control": "no-store, no-cache, must-revalidate",
+            },
+        }
+    );
+    return response.data;
 });
 
-// Admin Auth Slice
 const adminAuthSlice = createSlice({
     name: "adminAuth",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            // LOGIN
             .addCase(adminLogin.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(adminLogin.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.user = action.payload.success ? action.payload.user : null;
-                state.isAuthenticated = action.payload.success && action.payload.user?.role === "admin";
+                state.isAuthenticated = action.payload.success;
             })
             .addCase(adminLogin.rejected, (state) => {
                 state.isLoading = false;
@@ -76,22 +60,20 @@ const adminAuthSlice = createSlice({
                 state.isAuthenticated = false;
             })
 
-            // CHECK AUTH
-            .addCase(adminCheckAuth.pending, (state) => {
-                state.isLoading = true;
-            })
+
+
             .addCase(adminCheckAuth.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.user = action.payload.success ? action.payload.user : null;
-                state.isAuthenticated = action.payload.success && action.payload.user?.role === "admin";
+                state.isAuthenticated = action.payload.success;
             })
+
             .addCase(adminCheckAuth.rejected, (state) => {
                 state.isLoading = false;
                 state.user = null;
                 state.isAuthenticated = false;
             })
 
-            // LOGOUT
             .addCase(adminLogout.fulfilled, (state) => {
                 state.isLoading = false;
                 state.user = null;
